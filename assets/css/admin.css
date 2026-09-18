@@ -1,0 +1,209 @@
+/**
+ * Product Groups - Admin Styles
+ *
+ * @package ProductGroups
+ */
+
+#pg_meta_box {
+    padding: 0;
+    background: #fdfdfd;
+}
+
+#pg_meta_box .inside {
+    margin: 0;
+    padding: 0;
+}
+
+/* API Selector */
+.pg-api-selector {
+    padding: 16px 20px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e4e7;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.pg-api-selector label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e1e1e;
+}
+
+.pg-api-selector select {
+    min-width: 220px;
+    height: 36px;
+    border-radius: 4px;
+    border: 1px solid #8c8f94;
+    padding: 0 10px;
+}
+
+.pg-api-selector .description {
+    width: 100%;
+    margin: 4px 0 0;
+    color: #646970;
+    font-size: 13px;
+}
+
+/* Items Wrapper */
+#pg-wrapper {
+    padding: 20px;
+}
+
+.pg-actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+#pg-add-item {
+    background-color: #2271b1;
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s ease-in-out;
+}
+
+#pg-add-item:hover,
+#pg-add-item:focus {
+    background-color: #135e96;
+    color: #ffffff;
+}
+
+#pg-items {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Item Card */
+.pg-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pg-item:hover {
+    border-color: #2271b1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.pg-item-index {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: #f0f0f1;
+    color: #50575e;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.pg-item-fields {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.pg-item-field {
+    flex: 1 1 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pg-item-field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #50575e;
+}
+
+.pg-item input[type="url"],
+.pg-item input[type="text"] {
+    width: 100%;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 13px;
+    direction: ltr;
+    text-align: left;
+}
+
+.pg-item input[type="url"]:focus,
+.pg-item input[type="text"]:focus {
+    border-color: #2271b1;
+    outline: none;
+    box-shadow: 0 0 0 1px #2271b1;
+}
+
+.pg-remove-item {
+    background: transparent;
+    color: #d63638;
+    border: 1px solid #d63638;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    flex-shrink: 0;
+}
+
+.pg-remove-item:hover,
+.pg-remove-item:focus {
+    background: #d63638;
+    color: #ffffff;
+}
+
+.pg-empty-state {
+    padding: 30px;
+    text-align: center;
+    background: #fff;
+    border: 1px dashed #c3c4c7;
+    border-radius: 6px;
+    color: #646970;
+}
+
+/* Admin Column Shortcode Copy Box */
+.pg-shortcode-copy-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pg-shortcode-code {
+    background: #f0f0f1;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 12px;
+    user-select: all;
+}
+
+.pg-copy-btn {
+    padding: 2px 8px !important;
+    font-size: 11px !important;
+    height: 26px !important;
+    line-height: 24px !important;
+}

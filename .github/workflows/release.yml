@@ -1,0 +1,54 @@
+name: Validate and Release Plugin
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: plugin-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate PHP Syntax
+        run: |
+          find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l
+
+      - name: Validate JavaScript Syntax
+        run: |
+          node --check assets/js/admin.js
+
+      - name: Build Installable Plugin Archive
+        run: |
+          mkdir -p dist
+          mkdir -p build/product-groups
+          rsync -av --exclude='.git' --exclude='.github' --exclude='dist' --exclude='build' --exclude='.DS_Store' ./ build/product-groups/
+          cd build
+          zip -r ../dist/product-groups.zip product-groups -x '*.DS_Store'
+          cd ..
+          unzip -t dist/product-groups.zip
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(sed -n 's/^ \* Version: *\([0-9.]*\).*/\1/p' product-groups.php)
+          TAG="v$VERSION"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; bump plugin version in product-groups.php to publish a new release."
+            exit 0
+          fi
+          gh release create "$TAG" dist/product-groups.zip \
+            --title "Product Groups $VERSION" \
+            --notes "Release $VERSION of Product Groups WordPress plugin." \
+            --latest
