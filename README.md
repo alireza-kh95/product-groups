@@ -14,8 +14,9 @@ A modern, high-performance WordPress plugin for creating and displaying responsi
 - **Dual API Support**: Supports both Digikala **Normal** (`api.digikala.com/v2/`) and **Supermarket** (`api.digikala.com/fresh/v1/`) endpoints.
 - **High-Performance Transient Caching**: Eliminates slow page loads by caching API product responses in WordPress transients with configurable TTL, preventing repetitive external HTTP requests.
 - **Cache Invalidation**: Automatically flushes cached product data whenever a product group is saved or updated.
-- **Clean Responsive Design**: Modern, RTL-ready grid layout with discount calculation, out-of-stock badges, and Persian numerals.
-- **Shortcode Display**: Insert product groups anywhere using `[product_group id="123"]`.
+- **Plugin Settings Page**: Choose between **Classic (Default)** and **Modern** card styles, configure cache duration, and purge cache with 1-click under `گروه محصولات > تنظیمات`.
+- **Preserved Default Classic Cards**: Public-facing product cards maintain the original v1.2 design and markup by default for 100% backward compatibility.
+- **Modernized Admin UI & UX**: Visual animated API selector cards, product cards with live Digikala ID validation, and smooth reordering (Move Up / Move Down).
 - **1-Click Shortcode Copy**: Copy shortcodes with one click directly from the admin post listing table.
 - **Seamless GitHub Updates**: Native WordPress updater integrated with GitHub Releases.
   - Includes a **1-Click "Check for updates"** link on the WordPress Plugins screen.

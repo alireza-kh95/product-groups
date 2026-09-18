@@ -42,6 +42,7 @@ class PG_Plugin {
 	 * Initialize core modules.
 	 */
 	private function init_modules() {
+		PG_Settings::init();
 		PG_Post_Type::init();
 		PG_Meta_Box::init();
 		PG_Shortcode::init();
@@ -82,13 +83,18 @@ class PG_Plugin {
 	}
 
 	/**
-	 * Enqueue admin assets on Product Group edit and listing screens.
+	 * Enqueue admin assets on Product Group edit, listing, and settings screens.
 	 *
 	 * @param string $hook Current admin screen hook.
 	 */
 	public function enqueue_admin_assets( $hook ) {
 		$screen = get_current_screen();
-		if ( ! $screen || PG_Post_Type::POST_TYPE !== $screen->post_type ) {
+		if ( ! $screen ) {
+			return;
+		}
+
+		$is_pg_screen = ( PG_Post_Type::POST_TYPE === $screen->post_type ) || ( false !== strpos( $screen->id, 'product_group' ) );
+		if ( ! $is_pg_screen ) {
 			return;
 		}
 

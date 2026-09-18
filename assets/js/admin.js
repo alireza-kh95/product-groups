@@ -12,6 +12,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         initApiSelector();
+        initStyleSelector();
         initMetaBoxRepeater();
         initShortcodeCopy();
     });
@@ -62,6 +63,25 @@
                 });
                 card.classList.add('is-active');
                 const radio = card.querySelector('.pg-api-radio');
+                if (radio) {
+                    radio.checked = true;
+                }
+            });
+        });
+    }
+
+    /**
+     * Initialize Visual Card Style Option switcher on Settings page.
+     */
+    function initStyleSelector() {
+        const options = document.querySelectorAll('.pg-style-option');
+        options.forEach(function (option) {
+            option.addEventListener('click', function () {
+                options.forEach(function (o) {
+                    o.classList.remove('is-selected');
+                });
+                option.classList.add('is-selected');
+                const radio = option.querySelector('.pg-style-radio');
                 if (radio) {
                     radio.checked = true;
                 }

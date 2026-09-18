@@ -93,7 +93,9 @@ class PG_API {
 			'time'    => time(),
 		);
 
-		$ttl = apply_filters( 'product_groups_api_cache_ttl', self::DEFAULT_TTL, $product_id, $api_type );
+		$hours       = absint( get_option( 'pg_cache_ttl', 6 ) );
+		$default_ttl = ( $hours > 0 ? $hours : 6 ) * HOUR_IN_SECONDS;
+		$ttl         = apply_filters( 'product_groups_api_cache_ttl', $default_ttl, $product_id, $api_type );
 		set_transient( $cache_key, $parsed, $ttl );
 
 		return $parsed;

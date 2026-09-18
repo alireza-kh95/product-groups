@@ -3,7 +3,7 @@
  * Plugin Name: Product Groups (Link + Affiliate)
  * Plugin URI: https://github.com/alireza-kh95/product-groups
  * Description: Create and display responsive groups of Digikala products using product and affiliate links with automatic API caching and GitHub auto-updates.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: Alireza Khosravani
  * Author URI: https://github.com/alireza-kh95
  * License: GPL-2.0-or-later
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Plugin Constants
-define( 'PRODUCT_GROUPS_VERSION', '1.3.1' );
+define( 'PRODUCT_GROUPS_VERSION', '1.3.2' );
 define( 'PRODUCT_GROUPS_FILE', __FILE__ );
 define( 'PRODUCT_GROUPS_BASENAME', plugin_basename( __FILE__ ) );
 define( 'PRODUCT_GROUPS_DIR', plugin_dir_path( __FILE__ ) );
@@ -30,6 +30,7 @@ define( 'PRODUCT_GROUPS_URL', plugin_dir_url( __FILE__ ) );
 // Load Classes
 require_once PRODUCT_GROUPS_DIR . 'includes/class-utils.php';
 require_once PRODUCT_GROUPS_DIR . 'includes/class-api.php';
+require_once PRODUCT_GROUPS_DIR . 'includes/class-settings.php';
 require_once PRODUCT_GROUPS_DIR . 'includes/class-post-type.php';
 require_once PRODUCT_GROUPS_DIR . 'includes/class-meta-box.php';
 require_once PRODUCT_GROUPS_DIR . 'includes/class-shortcode.php';

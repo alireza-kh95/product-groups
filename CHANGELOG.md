@@ -2,6 +2,15 @@
 
 All notable changes to the **Product Groups** plugin will be documented in this file.
 
+## [1.3.2] - 2026-09-18
+### Added
+- **Plugin Settings Page**: Added a dedicated settings page under `گروه محصولات > تنظیمات` with options to:
+  - Select between **Classic (Default)** and **Modern** card styles for public posts.
+  - Configure Digikala API cache duration (1h, 3h, 6h, 12h, 24h).
+  - 1-Click "پاکسازی تمام کش‌های محصولات" (Purge all product caches).
+- **Preserved Default Classic Cards**: Public-facing product cards retain the exact original v1.2 HTML and CSS by default. Modern cards are available as an opt-in via Settings.
+- **Admin Area Modernization**: Modern visual cards, animated API selector, smooth reordering (Move Up/Down), live product ID validation, and interactive empty states focused specifically on the admin area.
+
 ## [1.3.1] - 2026-09-18
 ### Added
 - **Modern Animated UI & UX**:
