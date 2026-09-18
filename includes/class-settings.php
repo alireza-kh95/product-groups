@@ -323,7 +323,7 @@ class PG_Settings {
 					<div class="pg-form-row">
 						<label for="pg_snappshop_proxy_key" class="pg-label"><?php esc_html_e( 'کلید پراکسی:', 'product-groups' ); ?></label>
 						<input type="password" class="regular-text" id="pg_snappshop_proxy_key" name="<?php echo esc_attr( self::OPTION_SNAPP_PROXY_KEY ); ?>" value="<?php echo esc_attr( $proxy_config['key'] ); ?>" autocomplete="new-password" />
-						<p class="description"><?php esc_html_e( 'این کلید فقط در درخواست سرور سایت شما به پراکسی ارسال می‌شود و در مرورگر بازدیدکنندگان نمایش داده نمی‌شود.', 'product-groups' ); ?></p>
+						<p class="description"><?php esc_html_e( 'برای هاست‌های مجاز این فیلد لازم نیست. در سایر هاست‌ها، کلید فقط در درخواست سرور سایت به پراکسی ارسال می‌شود و در مرورگر بازدیدکنندگان نمایش داده نمی‌شود.', 'product-groups' ); ?></p>
 					</div>
 				</div>
 

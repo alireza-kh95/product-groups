@@ -53,9 +53,11 @@ class PG_API {
 		// Determine API Endpoint
 		if ( 'snappshop' === $api_type ) {
 			$proxy = PG_Settings::get_snappshop_proxy_config();
-			if ( $proxy['enabled'] && ! empty( $proxy['url'] ) && ! empty( $proxy['key'] ) ) {
-				$url                              = $proxy['url'] . '/products/' . $numeric_id;
-				$headers['X-Product-Groups-Key'] = $proxy['key'];
+			if ( $proxy['enabled'] && ! empty( $proxy['url'] ) ) {
+				$url = $proxy['url'] . '/products/' . $numeric_id;
+				if ( ! empty( $proxy['key'] ) ) {
+					$headers['X-Product-Groups-Key'] = $proxy['key'];
+				}
 			} else {
 				$url = "https://apix.snappshop.ir/products/v2/{$numeric_id}";
 			}
