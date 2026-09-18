@@ -42,7 +42,7 @@ class PG_Shortcode {
 
 		$products = get_post_meta( $post_id, '_pg_products', true );
 		if ( empty( $products ) || ! is_array( $products ) ) {
-			return '<p class="pg-no-products">' . esc_html__( 'محصولی یافت نشد.', 'product-groups' ) . '</p>';
+			return '<p class="pg-no-products">' . esc_html__( 'محصولی برای این گروه تنظیم نشده است.', 'product-groups' ) . '</p>';
 		}
 
 		$api_type = get_post_meta( $post_id, '_pg_api_type', true );
@@ -82,7 +82,7 @@ class PG_Shortcode {
 		}
 
 		if ( empty( $items ) ) {
-			return '<p class="pg-no-products">' . esc_html__( 'محصولی یافت نشد.', 'product-groups' ) . '</p>';
+			return '<p class="pg-fetch-error">' . esc_html__( 'در حال حاضر امکان دریافت اطلاعات محصولات وجود ندارد. لطفاً بعداً مراجعه کنید.', 'product-groups' ) . '</p>';
 		}
 
 		ob_start();

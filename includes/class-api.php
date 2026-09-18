@@ -32,18 +32,24 @@ class PG_API {
 
 		if ( ! $force_refresh ) {
 			$cached = get_transient( $cache_key );
-			if ( false !== $cached && is_array( $cached ) ) {
+			if ( false !== $cached && is_array( $cached ) && empty( $cached['error'] ) ) {
 				return $cached;
 			}
 		}
 
+		$numeric_id = ( 'snappshop' === $api_type ) ? preg_replace( '/\D/', '', $product_id ) : $product_id;
+		if ( empty( $numeric_id ) ) {
+			self::log_error( $api_type, $product_id, null, 'Invalid or empty product ID' );
+			return false;
+		}
+
 		// Determine API Endpoint
 		if ( 'snappshop' === $api_type ) {
-			$url = "https://apix.snappshop.ir/products/v2/{$product_id}";
+			$url = "https://apix.snappshop.ir/products/v2/{$numeric_id}";
 		} elseif ( 'supermarket' === $api_type ) {
-			$url = "https://api.digikala.com/fresh/v1/product/{$product_id}/";
+			$url = "https://api.digikala.com/fresh/v1/product/{$numeric_id}/";
 		} else {
-			$url = "https://api.digikala.com/v2/product/{$product_id}/";
+			$url = "https://api.digikala.com/v2/product/{$numeric_id}/";
 		}
 
 		$response = wp_remote_get(
@@ -58,17 +64,46 @@ class PG_API {
 			)
 		);
 
-		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			// Negative cache for 3 minutes to avoid hammering failing API
-			set_transient( $cache_key, array( 'error' => true ), 180 );
+		if ( is_wp_error( $response ) ) {
+			self::log_error( $api_type, $product_id, null, $response->get_error_message() );
+			return false;
+		}
+
+		$code = wp_remote_retrieve_response_code( $response );
+		if ( 200 !== $code ) {
+			$err_msg = wp_remote_retrieve_response_message( $response );
+			$body    = wp_remote_retrieve_body( $response );
+			if ( ! empty( $body ) ) {
+				$err_json = json_decode( $body, true );
+				if ( is_array( $err_json ) ) {
+					if ( ! empty( $err_json['message'] ) && is_string( $err_json['message'] ) ) {
+						$err_msg = $err_json['message'];
+					} elseif ( ! empty( $err_json['error'] ) && is_string( $err_json['error'] ) ) {
+						$err_msg = $err_json['error'];
+					}
+				}
+			}
+			self::log_error( $api_type, $product_id, $code, $err_msg ?: 'HTTP request returned non-200 status' );
 			return false;
 		}
 
 		$body = wp_remote_retrieve_body( $response );
 		$data = json_decode( $body, true );
 
-		if ( ! is_array( $data ) || empty( $data['data'] ) ) {
-			set_transient( $cache_key, array( 'error' => true ), 180 );
+		if ( ! is_array( $data ) ) {
+			self::log_error( $api_type, $product_id, $code, 'Failed to parse JSON response body' );
+			return false;
+		}
+
+		if ( isset( $data['status'] ) && false === $data['status'] ) {
+			$err_msg = ! empty( $data['message'] ) && is_string( $data['message'] ) ? $data['message'] : 'API returned status false';
+			self::log_error( $api_type, $product_id, $code, $err_msg );
+			return false;
+		}
+
+		if ( empty( $data['data'] ) || ! is_array( $data['data'] ) ) {
+			$err_msg = ! empty( $data['message'] ) && is_string( $data['message'] ) ? $data['message'] : 'Empty or invalid data field in API response';
+			self::log_error( $api_type, $product_id, $code, $err_msg );
 			return false;
 		}
 
@@ -76,6 +111,11 @@ class PG_API {
 			$raw_data = $data['data'];
 			$content  = $raw_data['content'] ?? array();
 			$title    = $content['title_fa'] ?? ( $raw_data['page']['title'] ?? ( $content['title_en'] ?? '' ) );
+
+			if ( empty( $title ) ) {
+				self::log_error( $api_type, $product_id, $code, 'Could not determine product title from Snapp Shop response' );
+				return false;
+			}
 
 			// Extract image URL
 			$image_url = '';
@@ -152,8 +192,8 @@ class PG_API {
 		} else {
 			// Digikala (Normal or Supermarket)
 			$raw = $data['data']['product'] ?? array();
-			if ( empty( $raw ) ) {
-				set_transient( $cache_key, array( 'error' => true ), 180 );
+			if ( empty( $raw ) || ! is_array( $raw ) ) {
+				self::log_error( $api_type, $product_id, $code, 'Empty product field in Digikala response' );
 				return false;
 			}
 
@@ -236,5 +276,28 @@ class PG_API {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Log API request failures safely without sensitive data.
+	 *
+	 * @param string   $api_type     API type.
+	 * @param string   $product_id   Product ID.
+	 * @param int|null $status_code  HTTP response code if available.
+	 * @param string   $error_message Sanitized short error message.
+	 */
+	private static function log_error( $api_type, $product_id, $status_code, $error_message ) {
+		$code_str = $status_code ? (string) $status_code : 'N/A';
+		$message  = sanitize_text_field( substr( trim( (string) $error_message ), 0, 200 ) );
+
+		error_log(
+			sprintf(
+				'[Product Groups] API fetch failed | Type: %s | Product ID: %s | HTTP Status: %s | Error: %s',
+				$api_type,
+				$product_id,
+				$code_str,
+				$message
+			)
+		);
 	}
 }

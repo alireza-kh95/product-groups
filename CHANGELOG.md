@@ -2,6 +2,14 @@
 
 All notable changes to the **Product Groups** plugin will be documented in this file.
 
+## [1.4.1] - 2026-09-18
+### Fixed
+- **Negative Cache Removal**: Completely removed negative caching of failed API responses (WP_Error, HTTP non-200, invalid JSON, `status: false`, and empty data) to prevent temporary proxy/WAF blocks (such as 403 Forbidden) from causing product cards to disappear for 3 minutes.
+- **Cache Invalidation on Post Save**: Updated `save_meta_box` to invalidate cached products for both previous (old) and newly updated product links across API types.
+- **Safe WordPress Error Logging**: Added sanitized `error_log()` reporting with API type, product ID, HTTP status code, and error message, with strict omission of any sensitive data or URLs.
+- **Shortcode Error Handling**: Distinguished empty groups ("محصولی برای این گروه تنظیم نشده است.") from temporary API fetch errors ("در حال حاضر امکان دریافت اطلاعات محصولات وجود ندارد. لطفاً بعداً مراجعه کنید.").
+- **Strict Numeric ID Extraction**: Ensured Snapp Shop API requests exclusively use the numeric ID portion (`https://apix.snappshop.ir/products/v2/{id}`).
+
 ## [1.4.0] - 2026-09-18
 ### Added
 - **اسنپ شاپ (Snapp Shop) Integration**:

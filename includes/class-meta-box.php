@@ -248,6 +248,19 @@ class PG_Meta_Box {
 			return;
 		}
 
+		// Invalidate cache for existing (old) products before saving changes
+		$old_products = get_post_meta( $post_id, '_pg_products', true );
+		$old_api_type = get_post_meta( $post_id, '_pg_api_type', true ) ?: 'normal';
+
+		if ( is_array( $old_products ) ) {
+			foreach ( $old_products as $old_item ) {
+				$old_pid = PG_Utils::extract_product_id( $old_item['product_link'] ?? '' );
+				if ( $old_pid ) {
+					PG_API::delete_product_cache( $old_pid, $old_api_type );
+				}
+			}
+		}
+
 		// Save API Type
 		$allowed_api_types = array( 'normal', 'supermarket', 'snappshop' );
 		$api_type          = isset( $_POST['pg_api_type'] ) && in_array( $_POST['pg_api_type'], $allowed_api_types, true )
@@ -255,9 +268,6 @@ class PG_Meta_Box {
 			: 'normal';
 
 		update_post_meta( $post_id, '_pg_api_type', $api_type );
-
-		// Invalidate cache for this group so changes reflect immediately
-		PG_API::delete_group_cache( $post_id );
 
 		// Sanitize & Save Products
 		$sanitized_products = array();
@@ -281,5 +291,8 @@ class PG_Meta_Box {
 		}
 
 		update_post_meta( $post_id, '_pg_products', $sanitized_products );
+
+		// Invalidate cache for newly saved products as well
+		PG_API::delete_group_cache( $post_id );
 	}
 }
