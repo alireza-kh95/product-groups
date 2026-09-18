@@ -13,6 +13,9 @@ class PG_Settings {
 
 	const OPTION_CARD_STYLE   = 'pg_card_style';
 	const OPTION_CACHE_TTL    = 'pg_cache_ttl';
+	const OPTION_SNAPP_PROXY_ENABLED = 'pg_snappshop_proxy_enabled';
+	const OPTION_SNAPP_PROXY_URL     = 'pg_snappshop_proxy_url';
+	const OPTION_SNAPP_PROXY_KEY     = 'pg_snappshop_proxy_key';
 
 	/**
 	 * Register hooks.
@@ -60,6 +63,36 @@ class PG_Settings {
 				'default'           => 6,
 			)
 		);
+
+		register_setting(
+			'pg_settings_group',
+			self::OPTION_SNAPP_PROXY_ENABLED,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => array( __CLASS__, 'sanitize_proxy_enabled' ),
+				'default'           => '0',
+			)
+		);
+
+		register_setting(
+			'pg_settings_group',
+			self::OPTION_SNAPP_PROXY_URL,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => array( __CLASS__, 'sanitize_proxy_url' ),
+				'default'           => 'https://harfoo.ir/snappshop-proxy/v1',
+			)
+		);
+
+		register_setting(
+			'pg_settings_group',
+			self::OPTION_SNAPP_PROXY_KEY,
+			array(
+				'type'              => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
+				'default'           => '',
+			)
+		);
 	}
 
 	/**
@@ -70,6 +103,40 @@ class PG_Settings {
 	 */
 	public static function sanitize_card_style( $value ) {
 		return in_array( $value, array( 'classic', 'modern' ), true ) ? $value : 'classic';
+	}
+
+	/**
+	 * Sanitize the Snapp Shop proxy toggle.
+	 *
+	 * @param string $value Checkbox value.
+	 * @return string
+	 */
+	public static function sanitize_proxy_enabled( $value ) {
+		return '1' === (string) $value ? '1' : '0';
+	}
+
+	/**
+	 * Sanitize a proxy base URL.
+	 *
+	 * @param string $value URL value.
+	 * @return string
+	 */
+	public static function sanitize_proxy_url( $value ) {
+		$url = untrailingslashit( esc_url_raw( $value ) );
+		return 0 === strpos( $url, 'https://' ) ? $url : '';
+	}
+
+	/**
+	 * Get the optional Snapp Shop proxy configuration.
+	 *
+	 * @return array{enabled: bool, url: string, key: string}
+	 */
+	public static function get_snappshop_proxy_config() {
+		return array(
+			'enabled' => '1' === get_option( self::OPTION_SNAPP_PROXY_ENABLED, '0' ),
+			'url'     => untrailingslashit( get_option( self::OPTION_SNAPP_PROXY_URL, 'https://harfoo.ir/snappshop-proxy/v1' ) ),
+			'key'     => get_option( self::OPTION_SNAPP_PROXY_KEY, '' ),
+		);
 	}
 
 	/**
@@ -116,6 +183,7 @@ class PG_Settings {
 
 		$current_style = self::get_card_style();
 		$cache_ttl     = get_option( self::OPTION_CACHE_TTL, 6 );
+		$proxy_config  = self::get_snappshop_proxy_config();
 
 		if ( isset( $_GET['settings-updated'] ) ) {
 			?>
@@ -229,6 +297,33 @@ class PG_Settings {
 						<p class="description">
 							<?php esc_html_e( 'نکته: هر زمان که یک گروه محصول را در پیشخوان ویرایش و ذخیره کنید، کش آن به صورت خودکار بلافاصله بروزرسانی می‌شود.', 'product-groups' ); ?>
 						</p>
+					</div>
+				</div>
+
+				<!-- Snapp Shop Proxy Settings -->
+				<div class="pg-settings-card">
+					<div class="pg-card-header">
+						<h2><?php esc_html_e( 'پراکسی اسنپ‌شاپ', 'product-groups' ); ?></h2>
+						<p class="description"><?php esc_html_e( 'در صورت مسدود شدن دسترسی هاست به اسنپ‌شاپ، اطلاعات محصولات را از طریق پراکسی خصوصی دریافت کنید.', 'product-groups' ); ?></p>
+					</div>
+
+					<div class="pg-form-row">
+						<label>
+							<input type="hidden" name="<?php echo esc_attr( self::OPTION_SNAPP_PROXY_ENABLED ); ?>" value="0" />
+							<input type="checkbox" name="<?php echo esc_attr( self::OPTION_SNAPP_PROXY_ENABLED ); ?>" value="1" <?php checked( $proxy_config['enabled'] ); ?> />
+							<?php esc_html_e( 'استفاده از پراکسی برای محصولات اسنپ‌شاپ', 'product-groups' ); ?>
+						</label>
+					</div>
+
+					<div class="pg-form-row">
+						<label for="pg_snappshop_proxy_url" class="pg-label"><?php esc_html_e( 'آدرس پراکسی:', 'product-groups' ); ?></label>
+						<input type="url" class="regular-text" id="pg_snappshop_proxy_url" name="<?php echo esc_attr( self::OPTION_SNAPP_PROXY_URL ); ?>" value="<?php echo esc_attr( $proxy_config['url'] ); ?>" placeholder="https://example.com/snappshop-proxy/v1" />
+					</div>
+
+					<div class="pg-form-row">
+						<label for="pg_snappshop_proxy_key" class="pg-label"><?php esc_html_e( 'کلید پراکسی:', 'product-groups' ); ?></label>
+						<input type="password" class="regular-text" id="pg_snappshop_proxy_key" name="<?php echo esc_attr( self::OPTION_SNAPP_PROXY_KEY ); ?>" value="<?php echo esc_attr( $proxy_config['key'] ); ?>" autocomplete="new-password" />
+						<p class="description"><?php esc_html_e( 'این کلید فقط در درخواست سرور سایت شما به پراکسی ارسال می‌شود و در مرورگر بازدیدکنندگان نمایش داده نمی‌شود.', 'product-groups' ); ?></p>
 					</div>
 				</div>
 

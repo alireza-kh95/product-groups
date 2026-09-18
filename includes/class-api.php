@@ -45,9 +45,20 @@ class PG_API {
 			return false;
 		}
 
+		$headers = array(
+			'Accept'  => 'application/json',
+			'Referer' => 'snappshop' === $api_type ? 'https://snappshop.ir/' : 'https://www.digikala.com/',
+		);
+
 		// Determine API Endpoint
 		if ( 'snappshop' === $api_type ) {
-			$url = "https://apix.snappshop.ir/products/v2/{$numeric_id}";
+			$proxy = PG_Settings::get_snappshop_proxy_config();
+			if ( $proxy['enabled'] && ! empty( $proxy['url'] ) && ! empty( $proxy['key'] ) ) {
+				$url                              = $proxy['url'] . '/products/' . $numeric_id;
+				$headers['X-Product-Groups-Key'] = $proxy['key'];
+			} else {
+				$url = "https://apix.snappshop.ir/products/v2/{$numeric_id}";
+			}
 		} elseif ( 'supermarket' === $api_type ) {
 			$url = "https://api.digikala.com/fresh/v1/product/{$numeric_id}/";
 		} else {
@@ -59,10 +70,7 @@ class PG_API {
 			array(
 				'timeout'    => 10,
 				'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-				'headers'    => array(
-					'Accept'  => 'application/json',
-					'Referer' => 'snappshop' === $api_type ? 'https://snappshop.ir/' : 'https://www.digikala.com/',
-				),
+				'headers'    => $headers,
 			)
 		);
 
