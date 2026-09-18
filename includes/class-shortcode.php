@@ -77,6 +77,7 @@ class PG_Shortcode {
 				'image'          => $data['image'],
 				'pricing'        => $pricing,
 				'affiliate_link' => $affiliate_link,
+				'source'         => $data['source'] ?? ( 'snappshop' === $api_type ? 'snappshop' : 'digikala' ),
 			);
 		}
 

@@ -29,7 +29,7 @@
     }
 
     /**
-     * Extract product ID from a Digikala URL or string.
+     * Extract product ID from a product URL or string (Digikala dkp or Snapp Shop snp).
      */
     function extractProductId(url) {
         if (!url) return null;
@@ -39,10 +39,10 @@
             url = url.trim();
         }
 
-        const dkpMatch = url.match(/dkp-(\d+)/i);
-        if (dkpMatch) return dkpMatch[1];
+        const idMatch = url.match(/(?:dkp|snp)-(\d+)/i);
+        if (idMatch) return idMatch[1];
 
-        const productMatch = url.match(/\/product\/(\d+)/i);
+        const productMatch = url.match(/\/products?\/(?:(?:dkp|snp)-)?(\d+)/i);
         if (productMatch) return productMatch[1];
 
         const numMatch = url.match(/^(\d+)$/);
@@ -234,7 +234,7 @@
                                        placeholder="${strings.productUrlPlaceholder}"
                                        required />
                             </div>
-                            <span class="pg-field-hint">شناسه dkp محصول در لینک باید وجود داشته باشد.</span>
+                            <span class="pg-field-hint">شناسه کالا (dkp یا snp) در لینک باید وجود داشته باشد.</span>
                         </div>
                         <div class="pg-field-col pg-col-affiliate">
                             <label for="pg_a_link_${index}">

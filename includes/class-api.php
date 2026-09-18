@@ -38,7 +38,9 @@ class PG_API {
 		}
 
 		// Determine API Endpoint
-		if ( 'supermarket' === $api_type ) {
+		if ( 'snappshop' === $api_type ) {
+			$url = "https://apix.snappshop.ir/products/v2/{$product_id}";
+		} elseif ( 'supermarket' === $api_type ) {
 			$url = "https://api.digikala.com/fresh/v1/product/{$product_id}/";
 		} else {
 			$url = "https://api.digikala.com/v2/product/{$product_id}/";
@@ -48,9 +50,10 @@ class PG_API {
 			$url,
 			array(
 				'timeout'    => 10,
-				'user-agent' => 'Mozilla/5.0 (WordPress; Product Groups Plugin)',
+				'user-agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
 				'headers'    => array(
-					'Accept' => 'application/json',
+					'Accept'  => 'application/json',
+					'Referer' => 'snappshop' === $api_type ? 'https://snappshop.ir/' : 'https://www.digikala.com/',
 				),
 			)
 		);
@@ -64,34 +67,119 @@ class PG_API {
 		$body = wp_remote_retrieve_body( $response );
 		$data = json_decode( $body, true );
 
-		if ( ! is_array( $data ) || empty( $data['data']['product'] ) ) {
+		if ( ! is_array( $data ) || empty( $data['data'] ) ) {
 			set_transient( $cache_key, array( 'error' => true ), 180 );
 			return false;
 		}
 
-		$raw = $data['data']['product'];
+		if ( 'snappshop' === $api_type ) {
+			$raw_data = $data['data'];
+			$content  = $raw_data['content'] ?? array();
+			$title    = $content['title_fa'] ?? ( $raw_data['page']['title'] ?? ( $content['title_en'] ?? '' ) );
 
-		$image_url = '';
-		if ( ! empty( $raw['images']['main']['url'] ) ) {
-			$image_url = is_array( $raw['images']['main']['url'] )
-				? ( $raw['images']['main']['url'][0] ?? '' )
-				: (string) $raw['images']['main']['url'];
+			// Extract image URL
+			$image_url = '';
+			if ( ! empty( $raw_data['images'][0]['src'] ) ) {
+				$image_url = $raw_data['images'][0]['src'];
+			} elseif ( ! empty( $raw_data['page']['extra_meta'] ) ) {
+				foreach ( $raw_data['page']['extra_meta'] as $meta ) {
+					if ( 'og:image' === ( $meta['property'] ?? '' ) && ! empty( $meta['content'] ) ) {
+						$image_url = $meta['content'];
+						break;
+					}
+				}
+			}
+
+			// Extract price and stock from default_variant or first vendor
+			$default_var   = $raw_data['default_variant'] ?? array();
+			$target_var_id = $default_var['variation_id'] ?? '';
+			$variants      = $raw_data['variants'] ?? array();
+
+			$selected_vendor = null;
+			foreach ( $variants as $variant ) {
+				if ( ! empty( $variant['vendor'][0] ) ) {
+					if ( $target_var_id && ( $variant['variation_id'] ?? '' ) === $target_var_id ) {
+						$selected_vendor = $variant['vendor'][0];
+						break;
+					}
+					if ( null === $selected_vendor ) {
+						$selected_vendor = $variant['vendor'][0];
+					}
+				}
+			}
+
+			$selling_price = 0;
+			$rrp_price     = 0;
+			$stock         = 1;
+
+			if ( $selected_vendor ) {
+				$price_val   = isset( $selected_vendor['price'] ) ? (int) $selected_vendor['price'] : 0;
+				$special_val = isset( $selected_vendor['special_price'] ) ? (int) $selected_vendor['special_price'] : 0;
+				$stock       = isset( $selected_vendor['stock'] ) ? (int) $selected_vendor['stock'] : 0;
+
+				if ( $special_val > 0 && $special_val < $price_val ) {
+					$selling_price = $special_val;
+					$rrp_price     = $price_val;
+				} else {
+					$selling_price = $price_val;
+					$rrp_price     = $price_val;
+				}
+			}
+
+			// Fallback: extract price from page.extra_meta if needed
+			if ( 0 === $selling_price && ! empty( $raw_data['page']['extra_meta'] ) ) {
+				foreach ( $raw_data['page']['extra_meta'] as $meta ) {
+					if ( 'product:price:amount' === ( $meta['property'] ?? '' ) ) {
+						$selling_price = (int) $meta['content'];
+						$rrp_price     = $selling_price;
+						break;
+					}
+				}
+			}
+
+			$status = ( $stock <= 0 ) ? 'out_of_stock' : 'marketable';
+
+			$parsed = array(
+				'id'      => $product_id,
+				'title'   => sanitize_text_field( $title ),
+				'image'   => esc_url_raw( $image_url ),
+				'price'   => $selling_price,
+				'rrp'     => $rrp_price,
+				'status'  => $status,
+				'source'  => 'snappshop',
+				'time'    => time(),
+			);
+		} else {
+			// Digikala (Normal or Supermarket)
+			$raw = $data['data']['product'] ?? array();
+			if ( empty( $raw ) ) {
+				set_transient( $cache_key, array( 'error' => true ), 180 );
+				return false;
+			}
+
+			$image_url = '';
+			if ( ! empty( $raw['images']['main']['url'] ) ) {
+				$image_url = is_array( $raw['images']['main']['url'] )
+					? ( $raw['images']['main']['url'][0] ?? '' )
+					: (string) $raw['images']['main']['url'];
+			}
+
+			$variant       = $raw['default_variant'] ?? array();
+			$selling_price = isset( $variant['price']['selling_price'] ) ? (int) $variant['price']['selling_price'] : ( isset( $raw['price']['selling_price'] ) ? (int) $raw['price']['selling_price'] : 0 );
+			$rrp_price     = isset( $variant['price']['rrp_price'] ) ? (int) $variant['price']['rrp_price'] : ( isset( $raw['price']['rrp_price'] ) ? (int) $raw['price']['rrp_price'] : $selling_price );
+			$status        = sanitize_text_field( $raw['status'] ?? ( $variant['status'] ?? 'marketable' ) );
+
+			$parsed = array(
+				'id'      => $product_id,
+				'title'   => sanitize_text_field( $raw['title_fa'] ?? ( $raw['title_en'] ?? '' ) ),
+				'image'   => esc_url_raw( $image_url ),
+				'price'   => $selling_price,
+				'rrp'     => $rrp_price,
+				'status'  => $status,
+				'source'  => 'digikala',
+				'time'    => time(),
+			);
 		}
-
-		$variant       = $raw['default_variant'] ?? array();
-		$selling_price = isset( $variant['price']['selling_price'] ) ? (int) $variant['price']['selling_price'] : ( isset( $raw['price']['selling_price'] ) ? (int) $raw['price']['selling_price'] : 0 );
-		$rrp_price     = isset( $variant['price']['rrp_price'] ) ? (int) $variant['price']['rrp_price'] : ( isset( $raw['price']['rrp_price'] ) ? (int) $raw['price']['rrp_price'] : $selling_price );
-		$status        = sanitize_text_field( $raw['status'] ?? ( $variant['status'] ?? 'marketable' ) );
-
-		$parsed = array(
-			'id'      => $product_id,
-			'title'   => sanitize_text_field( $raw['title_fa'] ?? ( $raw['title_en'] ?? '' ) ),
-			'image'   => esc_url_raw( $image_url ),
-			'price'   => $selling_price,
-			'rrp'     => $rrp_price,
-			'status'  => $status,
-			'time'    => time(),
-		);
 
 		$hours       = absint( get_option( 'pg_cache_ttl', 6 ) );
 		$default_ttl = ( $hours > 0 ? $hours : 6 ) * HOUR_IN_SECONDS;
@@ -110,7 +198,12 @@ class PG_API {
 	 */
 	public static function get_cache_key( $product_id, $api_type ) {
 		// Transient key max length is 172 characters.
-		$type_prefix = ( 'supermarket' === $api_type ) ? 's_' : 'n_';
+		$type_prefix = 'n_';
+		if ( 'supermarket' === $api_type ) {
+			$type_prefix = 's_';
+		} elseif ( 'snappshop' === $api_type ) {
+			$type_prefix = 'snp_';
+		}
 		return self::CACHE_PREFIX . $type_prefix . md5( $product_id );
 	}
 

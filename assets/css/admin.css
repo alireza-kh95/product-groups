@@ -8,6 +8,7 @@
     --pg-admin-primary: #2271b1;
     --pg-admin-primary-hover: #135e96;
     --pg-admin-fresh: #00a32a;
+    --pg-admin-snapp: #b400ae;
     --pg-admin-danger: #d63638;
     --pg-admin-danger-hover: #b32d2e;
     --pg-admin-border: #dcdcde;
@@ -108,6 +109,12 @@
     box-shadow: 0 4px 14px rgba(0, 163, 42, 0.12);
 }
 
+.pg-api-card:nth-child(3).is-active {
+    border-color: var(--pg-admin-snapp);
+    background: #fdf0fa;
+    box-shadow: 0 4px 14px rgba(180, 0, 174, 0.12);
+}
+
 .pg-api-card-content {
     display: flex;
     align-items: center;
@@ -133,6 +140,11 @@
 .pg-icon-fresh {
     background: #e6f6ec;
     color: var(--pg-admin-fresh);
+}
+
+.pg-icon-snapp {
+    background: #fdf0fa;
+    color: var(--pg-admin-snapp);
 }
 
 .pg-api-card-icon .dashicons {
@@ -186,6 +198,11 @@
 .pg-api-card:nth-child(2).is-active .pg-api-card-check {
     background: var(--pg-admin-fresh);
     border-color: var(--pg-admin-fresh);
+}
+
+.pg-api-card:nth-child(3).is-active .pg-api-card-check {
+    background: var(--pg-admin-snapp);
+    border-color: var(--pg-admin-snapp);
 }
 
 .pg-api-card.is-active .pg-api-card-check .dashicons {

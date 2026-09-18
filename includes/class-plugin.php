@@ -120,16 +120,16 @@ class PG_Plugin {
 			'pg-admin-script',
 			'pgAdminStrings',
 			array(
-				'productUrlPlaceholder'   => 'https://www.digikala.com/product/dkp-...',
-				'affiliateUrlPlaceholder' => 'https://affiliate.digikala.com/...',
-				'productUrlLabel'         => __( 'لینک محصول در دیجیکالا:', 'product-groups' ),
-				'affiliateUrlLabel'       => __( 'لینک افیلیت (همکاری در فروش):', 'product-groups' ),
+				'productUrlPlaceholder'   => 'https://www.digikala.com/product/dkp-... یا https://snappshop.ir/product/snp-...',
+				'affiliateUrlPlaceholder' => 'https://...',
+				'productUrlLabel'         => __( 'لینک محصول:', 'product-groups' ),
+				'affiliateUrlLabel'       => __( 'لینک همکاری در فروش (افیلیت):', 'product-groups' ),
 				'removeText'              => __( 'حذف', 'product-groups' ),
 				'copiedText'              => __( 'کپی شد! ✓', 'product-groups' ),
 				'confirmDelete'           => __( 'آیا از حذف این محصول اطمینان دارید؟', 'product-groups' ),
 				'itemTitle'               => __( 'محصول', 'product-groups' ),
 				'idDetected'              => __( 'کد کالا: ', 'product-groups' ),
-				'idNotFound'              => __( 'شناسه dkp یافت نشد', 'product-groups' ),
+				'idNotFound'              => __( 'شناسه کالا (dkp یا snp) یافت نشد', 'product-groups' ),
 			)
 		);
 	}

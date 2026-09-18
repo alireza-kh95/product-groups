@@ -11,12 +11,13 @@ A modern, high-performance WordPress plugin for creating and displaying responsi
 ## Features
 
 - **Custom Post Type**: Easily manage product groups in their own dedicated admin menu.
-- **Dual API Support**: Supports both Digikala **Normal** (`api.digikala.com/v2/`) and **Supermarket** (`api.digikala.com/fresh/v1/`) endpoints.
+- **Multi-Platform & Dual API Support**: Supports Digikala **Normal** (`api.digikala.com/v2/`), Digikala **Supermarket** (`api.digikala.com/fresh/v1/`), and **اسنپ شاپ (Snapp Shop)** (`apix.snappshop.ir/products/v2/`).
+- **Contextual Affiliate CTA Buttons**: Automatically renders the appropriate button call-to-action ("بررسی و خرید از اسنپ شاپ" or "بررسی و خرید از دیجیکالا") depending on the product platform.
 - **High-Performance Transient Caching**: Eliminates slow page loads by caching API product responses in WordPress transients with configurable TTL, preventing repetitive external HTTP requests.
 - **Cache Invalidation**: Automatically flushes cached product data whenever a product group is saved or updated.
 - **Plugin Settings Page**: Choose between **Classic (Default)** and **Modern** card styles, configure cache duration, and purge cache with 1-click under `گروه محصولات > تنظیمات`.
 - **Preserved Default Classic Cards**: Public-facing product cards maintain the original v1.2 design and markup by default for 100% backward compatibility.
-- **Modernized Admin UI & UX**: Visual animated API selector cards, product cards with live Digikala ID validation, and smooth reordering (Move Up / Move Down).
+- **Modernized Admin UI & UX**: Visual animated API selector cards, product cards with live Digikala (`dkp-`) and Snapp Shop (`snp-`) ID validation, and smooth reordering (Move Up / Move Down).
 - **1-Click Shortcode Copy**: Copy shortcodes with one click directly from the admin post listing table.
 - **Seamless GitHub Updates**: Native WordPress updater integrated with GitHub Releases.
   - Includes a **1-Click "Check for updates"** link on the WordPress Plugins screen.
@@ -36,11 +37,14 @@ A modern, high-performance WordPress plugin for creating and displaying responsi
 ## Usage
 
 1. Go to **گروه محصولات > افزودن گروه جدید**.
-2. Enter a title for the product group (e.g., "بهترین گوشی‌های هوشمند").
-3. Choose the **API Type** (معمولی or سوپرمارکتی).
+2. Enter a title for the product group (e.g., "بهترین ساعت‌های هوشمند").
+3. Choose the **منبع کالا و API**:
+   - **دیجیکالا - معمولی (Normal)**
+   - **دیجیکالا - سوپرمارکت (Fresh / Jet)**
+   - **اسنپ شاپ (Snapp Shop)**
 4. Click **افزودن محصول جدید** and enter:
-   - **لینک محصول دیجیکالا**: e.g., `https://www.digikala.com/product/dkp-123456/`
-   - **لینک افیلیت**: your custom affiliate tracking URL.
+   - **لینک محصول**: e.g., `https://www.digikala.com/product/dkp-123456/` or `https://snappshop.ir/product/snp-902121091`
+   - **لینک همکاری در فروش (افیلیت)**: your custom affiliate tracking URL.
 5. Publish or update the post.
 6. Copy the shortcode `[product_group id="X"]` and place it in any post, page, or widget.
 

@@ -2,7 +2,16 @@
 
 All notable changes to the **Product Groups** plugin will be documented in this file.
 
-## [1.3.2] - 2026-09-18
+## [1.4.0] - 2026-09-18
+### Added
+- **اسنپ شاپ (Snapp Shop) Integration**:
+  - Added Snapp Shop as a full platform option alongside Digikala Normal and Supermarket.
+  - Snapp Shop API integration via `https://apix.snappshop.ir/products/v2/{id}` with automatic extraction of title, image, selling price, RRP, discounts, and inventory status.
+  - Regex support for Snapp Shop product URLs (`https://snappshop.ir/product/snp-XXXXX`) and direct IDs (`snp-XXXXX`).
+  - Contextual affiliate CTA button labels: automatically displays "بررسی و خرید از اسنپ شاپ" for Snapp Shop products and "بررسی و خرید از دیجیکالا" for Digikala products.
+  - Visual Snapp Shop radio card in admin with custom brand color (`#b400ae`), icon, and active status animations.
+  - Admin post list column indicator for Snapp Shop groups.
+  - Separate transient cache isolation for Snapp Shop products (`_pg_cache_snp_{hash}`).
 ### Added
 - **Plugin Settings Page**: Added a dedicated settings page under `گروه محصولات > تنظیمات` with options to:
   - Select between **Classic (Default)** and **Modern** card styles for public posts.

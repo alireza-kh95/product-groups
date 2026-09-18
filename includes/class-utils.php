@@ -38,13 +38,13 @@ class PG_Utils {
 
 		$decoded_url = urldecode( trim( $url ) );
 
-		// Standard Digikala dkp-XXXX format
-		if ( preg_match( '/dkp-(\d+)/i', $decoded_url, $matches ) ) {
+		// Digikala dkp-XXXX format or Snapp Shop snp-XXXX format
+		if ( preg_match( '/(?:dkp|snp)-(\d+)/i', $decoded_url, $matches ) ) {
 			return $matches[1];
 		}
 
-		// Product URL with numeric ID /product/12345/
-		if ( preg_match( '#/product/(\d+)#i', $decoded_url, $matches ) ) {
+		// Product URL with numeric ID /product/12345/ or /products/12345
+		if ( preg_match( '#/products?/(?:(?:dkp|snp)-)?(\d+)#i', $decoded_url, $matches ) ) {
 			return $matches[1];
 		}
 

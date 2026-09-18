@@ -56,7 +56,7 @@ class PG_Meta_Box {
 			<!-- Visual API Type Selector -->
 			<div class="pg-api-selector-wrap">
 				<div class="pg-section-heading">
-					<label class="pg-section-title"><?php esc_html_e( 'انتخاب نوع API دیجیکالا', 'product-groups' ); ?></label>
+					<label class="pg-section-title"><?php esc_html_e( 'انتخاب نوع منبع و API', 'product-groups' ); ?></label>
 					<span class="pg-section-badge"><?php esc_html_e( 'ضروری', 'product-groups' ); ?></span>
 				</div>
 
@@ -68,7 +68,7 @@ class PG_Meta_Box {
 								<span class="dashicons dashicons-store"></span>
 							</div>
 							<div class="pg-api-card-text">
-								<strong><?php esc_html_e( 'کالاهای معمولی (Normal API)', 'product-groups' ); ?></strong>
+								<strong><?php esc_html_e( 'دیجیکالا - کالاهای معمولی (Normal)', 'product-groups' ); ?></strong>
 								<span><?php esc_html_e( 'لوازم دیجیتال، مد، خانه، ابزار و کلیه کالاهای عمومی دیجیکالا', 'product-groups' ); ?></span>
 							</div>
 						</div>
@@ -84,8 +84,24 @@ class PG_Meta_Box {
 								<span class="dashicons dashicons-cart"></span>
 							</div>
 							<div class="pg-api-card-text">
-								<strong><?php esc_html_e( 'سوپرمارکت و تندمصرف (Fresh / Jet)', 'product-groups' ); ?></strong>
+								<strong><?php esc_html_e( 'دیجیکالا - سوپرمارکت (Fresh / Jet)', 'product-groups' ); ?></strong>
 								<span><?php esc_html_e( 'محصولات سوپرمارکتی و مصرفی دارای برچسب ارسال سریع', 'product-groups' ); ?></span>
+							</div>
+						</div>
+						<div class="pg-api-card-check">
+							<span class="dashicons dashicons-yes"></span>
+						</div>
+					</label>
+
+					<label class="pg-api-card <?php echo 'snappshop' === $api_type ? 'is-active' : ''; ?>">
+						<input type="radio" name="pg_api_type" value="snappshop" <?php checked( $api_type, 'snappshop' ); ?> class="pg-api-radio" />
+						<div class="pg-api-card-content">
+							<div class="pg-api-card-icon pg-icon-snapp">
+								<span class="dashicons dashicons-products"></span>
+							</div>
+							<div class="pg-api-card-text">
+								<strong><?php esc_html_e( 'اسنپ شاپ (Snapp Shop)', 'product-groups' ); ?></strong>
+								<span><?php esc_html_e( 'کالاهای فروشگاه اسنپ شاپ (شناسه snp-XXXXX)', 'product-groups' ); ?></span>
 							</div>
 						</div>
 						<div class="pg-api-card-check">
@@ -118,7 +134,7 @@ class PG_Meta_Box {
 						<span class="dashicons dashicons-products"></span>
 					</div>
 					<h3><?php esc_html_e( 'هنوز محصولی به این گروه اضافه نشده است', 'product-groups' ); ?></h3>
-					<p><?php esc_html_e( 'برای شروع، روی دکمه «افزودن محصول جدید» کلیک کنید و لینک‌های دیجیکالا را وارد نمایید.', 'product-groups' ); ?></p>
+					<p><?php esc_html_e( 'برای شروع، روی دکمه «افزودن محصول جدید» کلیک کنید و لینک‌های محصول را وارد نمایید.', 'product-groups' ); ?></p>
 					<button type="button" class="button button-secondary pg-btn-add-empty">
 						<?php esc_html_e( 'افزودن اولین محصول', 'product-groups' ); ?>
 					</button>
@@ -169,7 +185,7 @@ class PG_Meta_Box {
 										<div class="pg-field-col pg-col-product">
 											<label for="pg_p_link_<?php echo esc_attr( $index ); ?>">
 												<span class="dashicons dashicons-admin-links"></span>
-												<?php esc_html_e( 'لینک محصول در دیجیکالا:', 'product-groups' ); ?>
+												<?php esc_html_e( 'لینک محصول:', 'product-groups' ); ?>
 												<span class="pg-required">*</span>
 											</label>
 											<div class="pg-input-wrapper">
@@ -177,17 +193,17 @@ class PG_Meta_Box {
 													   id="pg_p_link_<?php echo esc_attr( $index ); ?>"
 													   data-field="product_link"
 													   name="pg_products[<?php echo esc_attr( $index ); ?>][product_link]"
-													   placeholder="https://www.digikala.com/product/dkp-..."
+													   placeholder="https://www.digikala.com/product/dkp-... یا https://snappshop.ir/product/snp-..."
 													   value="<?php echo $product_link; ?>"
 													   required />
 											</div>
-											<span class="pg-field-hint"><?php esc_html_e( 'شناسه dkp محصول در لینک باید وجود داشته باشد.', 'product-groups' ); ?></span>
+											<span class="pg-field-hint"><?php esc_html_e( 'شناسه کالا (dkp یا snp) در لینک باید وجود داشته باشد.', 'product-groups' ); ?></span>
 										</div>
 
 										<div class="pg-field-col pg-col-affiliate">
 											<label for="pg_a_link_<?php echo esc_attr( $index ); ?>">
 												<span class="dashicons dashicons-money-alt"></span>
-												<?php esc_html_e( 'لینک افیلیت (همکاری در فروش):', 'product-groups' ); ?>
+												<?php esc_html_e( 'لینک همکاری در فروش (افیلیت):', 'product-groups' ); ?>
 												<span class="pg-required">*</span>
 											</label>
 											<div class="pg-input-wrapper">
@@ -195,7 +211,7 @@ class PG_Meta_Box {
 													   id="pg_a_link_<?php echo esc_attr( $index ); ?>"
 													   data-field="affiliate_link"
 													   name="pg_products[<?php echo esc_attr( $index ); ?>][affiliate_link]"
-													   placeholder="https://affiliate.digikala.com/..."
+													   placeholder="https://..."
 													   value="<?php echo $affiliate_link; ?>"
 													   required />
 											</div>
@@ -233,7 +249,7 @@ class PG_Meta_Box {
 		}
 
 		// Save API Type
-		$allowed_api_types = array( 'normal', 'supermarket' );
+		$allowed_api_types = array( 'normal', 'supermarket', 'snappshop' );
 		$api_type          = isset( $_POST['pg_api_type'] ) && in_array( $_POST['pg_api_type'], $allowed_api_types, true )
 			? sanitize_text_field( $_POST['pg_api_type'] )
 			: 'normal';

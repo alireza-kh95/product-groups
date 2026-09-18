@@ -99,10 +99,12 @@ class PG_Post_Type {
 
 			case 'pg_api_type':
 				$api_type = get_post_meta( $post_id, '_pg_api_type', true );
-				if ( 'supermarket' === $api_type ) {
+				if ( 'snappshop' === $api_type ) {
+					echo '<span class="dashicons dashicons-products" style="color:#b400ae;vertical-align:middle;margin-left:4px;"></span> ' . esc_html__( 'اسنپ شاپ', 'product-groups' );
+				} elseif ( 'supermarket' === $api_type ) {
 					echo '<span class="dashicons dashicons-cart" style="color:#00a32a;vertical-align:middle;margin-left:4px;"></span> ' . esc_html__( 'سوپرمارکتی', 'product-groups' );
 				} else {
-					echo '<span class="dashicons dashicons-tag" style="color:#2271b1;vertical-align:middle;margin-left:4px;"></span> ' . esc_html__( 'معمولی', 'product-groups' );
+					echo '<span class="dashicons dashicons-tag" style="color:#2271b1;vertical-align:middle;margin-left:4px;"></span> ' . esc_html__( 'معمولی دیجیکالا', 'product-groups' );
 				}
 				break;
 

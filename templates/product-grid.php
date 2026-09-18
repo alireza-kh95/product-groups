@@ -61,12 +61,17 @@ $card_style = isset( $card_style ) ? $card_style : PG_Settings::get_card_style()
 							<?php endif; ?>
 						</p>
 
+						<?php
+						$btn_text = ( isset( $item['source'] ) && 'snappshop' === $item['source'] )
+							? esc_html__( 'بررسی و خرید از اسنپ شاپ', 'product-groups' )
+							: esc_html__( 'بررسی و خرید از دیجیکالا', 'product-groups' );
+						?>
 						<?php if ( ! empty( $item['affiliate_link'] ) ) : ?>
 							<a href="<?php echo esc_url( $item['affiliate_link'] ); ?>"
 							   class="pg-button"
 							   target="_blank"
 							   rel="noopener noreferrer nofollow">
-								<span><?php esc_html_e( 'بررسی و خرید از دیجیکالا', 'product-groups' ); ?></span>
+								<span><?php echo $btn_text; ?></span>
 								<svg class="pg-btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 									<circle cx="9" cy="21" r="1"></circle>
 									<circle cx="20" cy="21" r="1"></circle>
@@ -98,8 +103,13 @@ $card_style = isset( $card_style ) ? $card_style : PG_Settings::get_card_style()
 					</p>
 
 					<?php if ( ! empty( $item['affiliate_link'] ) ) : ?>
+						<?php
+						$classic_btn_text = ( isset( $item['source'] ) && 'snappshop' === $item['source'] )
+							? esc_html__( 'بررسی و خرید از اسنپ شاپ', 'product-groups' )
+							: esc_html__( 'بررسی و خرید از دیجیکالا', 'product-groups' );
+						?>
 						<a href="<?php echo esc_url( $item['affiliate_link'] ); ?>" class="pg-button" target="_blank" rel="noopener noreferrer nofollow">
-							<?php esc_html_e( 'بررسی و خرید از دیجیکالا', 'product-groups' ); ?>
+							<?php echo $classic_btn_text; ?>
 						</a>
 					<?php endif; ?>
 				</div>
