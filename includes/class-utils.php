@@ -59,12 +59,13 @@ class PG_Utils {
 	/**
 	 * Format product pricing and return array with display data.
 	 *
-	 * @param int|float $price Selling price in Rials.
-	 * @param int|float $rrp Recommended retail price in Rials.
+	 * @param int|float $price Selling price in the marketplace's native unit.
+	 * @param int|float $rrp Recommended retail price in the marketplace's native unit.
 	 * @param string    $status Product status ('marketable', 'out_of_stock', etc.).
+	 * @param string    $source Marketplace source.
 	 * @return array Display information.
 	 */
-	public static function format_pricing( $price, $rrp, $status = 'marketable' ) {
+	public static function format_pricing( $price, $rrp, $status = 'marketable', $source = 'digikala' ) {
 		if ( 'out_of_stock' === $status ) {
 			return array(
 				'is_out_of_stock'    => true,
@@ -78,9 +79,10 @@ class PG_Utils {
 			);
 		}
 
-		// Prices from Digikala API are in Rials; convert to Tomans (divide by 10)
-		$price_toman = $price ? floor( (float) $price / 10 ) : 0;
-		$rrp_toman   = $rrp ? floor( (float) $rrp / 10 ) : 0;
+		// Digikala returns rials, while Snapp Shop's vendor prices are already tomans.
+		$divisor     = 'snappshop' === $source ? 1 : 10;
+		$price_toman = $price ? floor( (float) $price / $divisor ) : 0;
+		$rrp_toman   = $rrp ? floor( (float) $rrp / $divisor ) : 0;
 
 		// Fallback: If price_toman is 0 but rrp_toman exists, use rrp_toman
 		if ( 0 === $price_toman && $rrp_toman > 0 ) {

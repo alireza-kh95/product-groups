@@ -69,7 +69,7 @@ class PG_Shortcode {
 				continue;
 			}
 
-			$pricing = PG_Utils::format_pricing( $data['price'], $data['rrp'], $data['status'] );
+			$pricing = PG_Utils::format_pricing( $data['price'], $data['rrp'], $data['status'], $data['source'] ?? 'digikala' );
 
 			$items[] = array(
 				'id'             => $product_id,

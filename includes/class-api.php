@@ -12,7 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class PG_API {
 
 	const CACHE_PREFIX = 'pg_p_';
+	const STALE_CACHE_PREFIX = 'pg_p_stale_';
 	const DEFAULT_TTL  = 21600; // 6 hours in seconds
+	const STALE_CACHE_TTL = WEEK_IN_SECONDS;
 
 	/**
 	 * Fetch product details from Digikala API with transient caching.
@@ -66,7 +68,7 @@ class PG_API {
 
 		if ( is_wp_error( $response ) ) {
 			self::log_error( $api_type, $product_id, null, $response->get_error_message() );
-			return false;
+			return self::get_stale_product( $product_id, $api_type );
 		}
 
 		$code = wp_remote_retrieve_response_code( $response );
@@ -84,7 +86,7 @@ class PG_API {
 				}
 			}
 			self::log_error( $api_type, $product_id, $code, $err_msg ?: 'HTTP request returned non-200 status' );
-			return false;
+			return self::get_stale_product( $product_id, $api_type );
 		}
 
 		$body = wp_remote_retrieve_body( $response );
@@ -92,19 +94,19 @@ class PG_API {
 
 		if ( ! is_array( $data ) ) {
 			self::log_error( $api_type, $product_id, $code, 'Failed to parse JSON response body' );
-			return false;
+			return self::get_stale_product( $product_id, $api_type );
 		}
 
 		if ( isset( $data['status'] ) && false === $data['status'] ) {
 			$err_msg = ! empty( $data['message'] ) && is_string( $data['message'] ) ? $data['message'] : 'API returned status false';
 			self::log_error( $api_type, $product_id, $code, $err_msg );
-			return false;
+			return self::get_stale_product( $product_id, $api_type );
 		}
 
 		if ( empty( $data['data'] ) || ! is_array( $data['data'] ) ) {
 			$err_msg = ! empty( $data['message'] ) && is_string( $data['message'] ) ? $data['message'] : 'Empty or invalid data field in API response';
 			self::log_error( $api_type, $product_id, $code, $err_msg );
-			return false;
+			return self::get_stale_product( $product_id, $api_type );
 		}
 
 		if ( 'snappshop' === $api_type ) {
@@ -114,7 +116,7 @@ class PG_API {
 
 			if ( empty( $title ) ) {
 				self::log_error( $api_type, $product_id, $code, 'Could not determine product title from Snapp Shop response' );
-				return false;
+				return self::get_stale_product( $product_id, $api_type );
 			}
 
 			// Extract image URL
@@ -194,7 +196,7 @@ class PG_API {
 			$raw = $data['data']['product'] ?? array();
 			if ( empty( $raw ) || ! is_array( $raw ) ) {
 				self::log_error( $api_type, $product_id, $code, 'Empty product field in Digikala response' );
-				return false;
+				return self::get_stale_product( $product_id, $api_type );
 			}
 
 			$image_url = '';
@@ -225,6 +227,7 @@ class PG_API {
 		$default_ttl = ( $hours > 0 ? $hours : 6 ) * HOUR_IN_SECONDS;
 		$ttl         = apply_filters( 'product_groups_api_cache_ttl', $default_ttl, $product_id, $api_type );
 		set_transient( $cache_key, $parsed, $ttl );
+		set_transient( self::get_stale_cache_key( $product_id, $api_type ), $parsed, self::STALE_CACHE_TTL );
 
 		return $parsed;
 	}
@@ -248,6 +251,34 @@ class PG_API {
 	}
 
 	/**
+	 * Build the longer-lived fallback cache key for a product.
+	 *
+	 * @param string $product_id Product ID.
+	 * @param string $api_type API type.
+	 * @return string
+	 */
+	private static function get_stale_cache_key( $product_id, $api_type ) {
+		return self::STALE_CACHE_PREFIX . md5( $api_type . ':' . $product_id );
+	}
+
+	/**
+	 * Return the last successful response during a temporary upstream failure.
+	 *
+	 * @param string $product_id Product ID.
+	 * @param string $api_type API type.
+	 * @return array|false
+	 */
+	private static function get_stale_product( $product_id, $api_type ) {
+		$stale = get_transient( self::get_stale_cache_key( $product_id, $api_type ) );
+		if ( ! is_array( $stale ) || empty( $stale['title'] ) ) {
+			return false;
+		}
+
+		$stale['is_stale'] = true;
+		return $stale;
+	}
+
+	/**
 	 * Delete cached data for a specific product.
 	 *
 	 * @param string $product_id
@@ -255,7 +286,9 @@ class PG_API {
 	 * @return bool
 	 */
 	public static function delete_product_cache( $product_id, $api_type = 'normal' ) {
-		return delete_transient( self::get_cache_key( $product_id, $api_type ) );
+		$deleted_fresh = delete_transient( self::get_cache_key( $product_id, $api_type ) );
+		$deleted_stale = delete_transient( self::get_stale_cache_key( $product_id, $api_type ) );
+		return $deleted_fresh || $deleted_stale;
 	}
 
 	/**
