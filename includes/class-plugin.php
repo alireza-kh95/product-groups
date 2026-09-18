@@ -115,11 +115,15 @@ class PG_Plugin {
 			'pgAdminStrings',
 			array(
 				'productUrlPlaceholder'   => 'https://www.digikala.com/product/dkp-...',
-				'affiliateUrlPlaceholder' => 'https://...',
-				'productUrlLabel'         => __( 'لینک محصول دیجیکالا:', 'product-groups' ),
-				'affiliateUrlLabel'       => __( 'لینک افیلیت:', 'product-groups' ),
+				'affiliateUrlPlaceholder' => 'https://affiliate.digikala.com/...',
+				'productUrlLabel'         => __( 'لینک محصول در دیجیکالا:', 'product-groups' ),
+				'affiliateUrlLabel'       => __( 'لینک افیلیت (همکاری در فروش):', 'product-groups' ),
 				'removeText'              => __( 'حذف', 'product-groups' ),
-				'copiedText'              => __( 'کپی شد!', 'product-groups' ),
+				'copiedText'              => __( 'کپی شد! ✓', 'product-groups' ),
+				'confirmDelete'           => __( 'آیا از حذف این محصول اطمینان دارید؟', 'product-groups' ),
+				'itemTitle'               => __( 'محصول', 'product-groups' ),
+				'idDetected'              => __( 'کد کالا: ', 'product-groups' ),
+				'idNotFound'              => __( 'شناسه dkp یافت نشد', 'product-groups' ),
 			)
 		);
 	}

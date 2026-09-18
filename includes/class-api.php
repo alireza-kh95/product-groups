@@ -78,13 +78,18 @@ class PG_API {
 				: (string) $raw['images']['main']['url'];
 		}
 
+		$variant       = $raw['default_variant'] ?? array();
+		$selling_price = isset( $variant['price']['selling_price'] ) ? (int) $variant['price']['selling_price'] : ( isset( $raw['price']['selling_price'] ) ? (int) $raw['price']['selling_price'] : 0 );
+		$rrp_price     = isset( $variant['price']['rrp_price'] ) ? (int) $variant['price']['rrp_price'] : ( isset( $raw['price']['rrp_price'] ) ? (int) $raw['price']['rrp_price'] : $selling_price );
+		$status        = sanitize_text_field( $raw['status'] ?? ( $variant['status'] ?? 'marketable' ) );
+
 		$parsed = array(
 			'id'      => $product_id,
 			'title'   => sanitize_text_field( $raw['title_fa'] ?? ( $raw['title_en'] ?? '' ) ),
 			'image'   => esc_url_raw( $image_url ),
-			'price'   => isset( $raw['default_variant']['price']['selling_price'] ) ? (int) $raw['default_variant']['price']['selling_price'] : 0,
-			'rrp'     => isset( $raw['default_variant']['price']['rrp_price'] ) ? (int) $raw['default_variant']['price']['rrp_price'] : 0,
-			'status'  => sanitize_text_field( $raw['status'] ?? 'marketable' ),
+			'price'   => $selling_price,
+			'rrp'     => $rrp_price,
+			'status'  => $status,
 			'time'    => time(),
 		);
 

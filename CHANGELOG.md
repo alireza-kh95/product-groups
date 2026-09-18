@@ -2,6 +2,23 @@
 
 All notable changes to the **Product Groups** plugin will be documented in this file.
 
+## [1.3.1] - 2026-09-18
+### Added
+- **Modern Animated UI & UX**:
+  - Smooth hover card animations, multi-layer drop shadows, and image scale-zoom transitions.
+  - Animated discount badges with percentage calculation (e.g. ۲۰٪ تخفیف).
+  - Modern shopping cart icon with hover slide animation on Digikala buttons.
+  - Shimmer wave hover effect on action buttons.
+- **Enhanced Admin Experience**:
+  - Visual segmented API selector cards for Normal and Supermarket APIs with smooth state animations.
+  - Reordering support: Added Move Up (↑) and Move Down (↓) quick-action buttons on product cards.
+  - Real-time Product ID validation: Instant detection of Digikala product IDs (`dkp-XXXXX`) as you type or paste.
+  - Safe deletion confirmation to prevent accidental card loss when editing.
+  - Empty state with quick-add action button and item counter.
+- **Rock-Solid Backward Compatibility**:
+  - Retained all legacy CSS selectors and DOM structure so existing themes and layouts continue working seamlessly.
+  - Enhanced pricing and API parsing fallbacks for both current and past product groups.
+
 ## [1.3.0] - 2026-09-18
 ### Added
 - **GitHub Release Updater**: Native WordPress admin updates directly from GitHub releases (`Update URI: https://github.com/alireza-kh95/product-groups`).
