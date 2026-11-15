@@ -64,7 +64,7 @@ class PG_API {
 		} elseif ( 'supermarket' === $api_type ) {
 			$url = "https://api.digikala.com/fresh/v1/product/{$numeric_id}/";
 		} else {
-			$url = "https://api.digikala.com/v2/product/{$numeric_id}/";
+			$url = "https://api.digikala.com/product/v1/products/{$numeric_id}/";
 		}
 
 		$response = wp_remote_get(

@@ -2,6 +2,10 @@
 
 All notable changes to the **Product Groups** plugin will be documented in this file.
 
+## [1.5.2] - 2026-11-15
+### Fixed
+- **Digikala Normal Product Fetching**: Switch product details to Digikala’s current Product API route (`/product/v1/products/{id}/`).
+
 ## [1.4.1] - 2026-09-18
 ### Fixed
 - **Negative Cache Removal**: Completely removed negative caching of failed API responses (WP_Error, HTTP non-200, invalid JSON, `status: false`, and empty data) to prevent temporary proxy/WAF blocks (such as 403 Forbidden) from causing product cards to disappear for 3 minutes.

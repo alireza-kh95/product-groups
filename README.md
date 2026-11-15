@@ -11,7 +11,7 @@ A modern, high-performance WordPress plugin for creating and displaying responsi
 ## Features
 
 - **Custom Post Type**: Easily manage product groups in their own dedicated admin menu.
-- **Multi-Platform & Dual API Support**: Supports Digikala **Normal** (`api.digikala.com/v2/`), Digikala **Supermarket** (`api.digikala.com/fresh/v1/`), and **اسنپ شاپ (Snapp Shop)** (`apix.snappshop.ir/products/v2/`).
+- **Multi-Platform & Dual API Support**: Supports Digikala **Normal** (`api.digikala.com/product/v1/products/{id}/`), Digikala **Supermarket** (`api.digikala.com/fresh/v1/`), and **اسنپ شاپ (Snapp Shop)** (`apix.snappshop.ir/products/v2/`).
 - **Contextual Affiliate CTA Buttons**: Automatically renders the appropriate button call-to-action ("بررسی و خرید از اسنپ شاپ" or "بررسی و خرید از دیجیکالا") depending on the product platform.
 - **High-Performance Transient Caching**: Eliminates slow page loads by caching API product responses in WordPress transients with configurable TTL, preventing repetitive external HTTP requests.
 - **Cache Invalidation**: Automatically flushes cached product data whenever a product group is saved or updated.
